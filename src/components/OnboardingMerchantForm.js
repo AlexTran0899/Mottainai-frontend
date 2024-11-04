@@ -78,7 +78,7 @@ function MerchantForm() {
           <>
             <TextField label="Zip Code" name="zipcode" value={merchant.zipcode} onChange={handleChange} fullWidth margin="normal" />
             <TextField label="Address Line 1" name="address_1" value={merchant.address_1} onChange={handleChange} fullWidth margin="normal" />
-            <TextField label="Address Line 1" name="address_2" value={merchant.address_2} onChange={handleChange} fullWidth margin="normal" />
+            <TextField label="Address Line 2" name="address_2" value={merchant.address_2} onChange={handleChange} fullWidth margin="normal" />
             <TextField label="City" name="city" value={merchant.city} onChange={handleChange} fullWidth margin="normal" />
             <TextField label="State" name="state" value={merchant.state} onChange={handleChange} fullWidth margin="normal" />
             <TextField label="Country" name="country" value={merchant.country} onChange={handleChange} fullWidth margin="normal" />
