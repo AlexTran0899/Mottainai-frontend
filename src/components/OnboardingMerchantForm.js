@@ -49,7 +49,7 @@ function MerchantForm() {
     e.preventDefault();
     
     try {
-      const response = await axios.post('https://your-api-endpoint.com/merchants', merchant);
+      const response = await axios.post('https://mottainai-backend-production.up.railway.app/api/merchants', merchant);
       console.log("Merchant Data Submitted:", response.data);
     } catch (error) {
       console.error("There was an error submitting the data!", error);
