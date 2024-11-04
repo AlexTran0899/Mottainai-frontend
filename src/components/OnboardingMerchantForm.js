@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import { TextField, Button, Box, Typography, Stepper, Step, StepLabel, LinearProgress } from '@mui/material';
-import axios from "axios"
-
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { TimePicker } from '@mui/x-date-pickers/TimePicker';
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import dayjs from 'dayjs';
 
 function MerchantForm() {
   const steps = ['Basic Info', 'Shop Details', 'Contact Info', 'Pickup Times'];
@@ -20,13 +24,17 @@ function MerchantForm() {
     country: "",
     phone_number: "",
     description: "",
-    pickup_start_time: "",
-    pickup_end_time: ""
+    pickup_start_time: null,
+    pickup_end_time: null
   });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setMerchant({ ...merchant, [name]: value });
+  };
+
+  const handleTimeChange = (name, newValue) => {
+    setMerchant({ ...merchant, [name]: newValue });
   };
 
   const handleNext = () => {
@@ -41,9 +49,8 @@ function MerchantForm() {
     e.preventDefault();
     
     try {
-      const response = await axios.post('https://mottainai-backend-production.up.railway.app/api/merchants', merchant);
+      const response = await axios.post('https://your-api-endpoint.com/merchants', merchant);
       console.log("Merchant Data Submitted:", response.data);
-      // You could display a success message or redirect here
     } catch (error) {
       console.error("There was an error submitting the data!", error);
     }
@@ -78,10 +85,22 @@ function MerchantForm() {
         );
       case 3:
         return (
-          <>
-            <TextField label="Pickup Start Time" name="pickup_start_time" type="time" value={merchant.pickup_start_time} onChange={handleChange} fullWidth margin="normal" InputLabelProps={{ shrink: true }} />
-            <TextField label="Pickup End Time" name="pickup_end_time" type="time" value={merchant.pickup_end_time} onChange={handleChange} fullWidth margin="normal" InputLabelProps={{ shrink: true }} />
-          </>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, width: '100%' }}>
+                <TimePicker
+                  label="Pickup Start Time"
+                  value={merchant.pickup_start_time}
+                  onChange={(newValue) => handleTimeChange("pickup_start_time", newValue)}
+                  renderInput={(params) => <TextField {...params} fullWidth margin="normal" />}
+                />
+                <TimePicker
+                  label="Pickup End Time"
+                  value={merchant.pickup_end_time}
+                  onChange={(newValue) => handleTimeChange("pickup_end_time", newValue)}
+                  renderInput={(params) => <TextField {...params} fullWidth margin="normal" />}
+                />
+              </Box>
+            </LocalizationProvider>
         );
       default:
         return null;
