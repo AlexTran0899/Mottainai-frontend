@@ -4,7 +4,6 @@ import { TextField, Button, Box, Typography, Stepper, Step, StepLabel, LinearPro
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import dayjs from 'dayjs';
 
 function MerchantForm() {
@@ -26,6 +25,7 @@ function MerchantForm() {
     description: "",
     pickup_start_time: null,
     pickup_end_time: null
+
   });
 
   const handleChange = (e) => {
@@ -45,16 +45,24 @@ function MerchantForm() {
     setActiveStep((prev) => prev - 1);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    try {
-      const response = await axios.post('https://mottainai-backend-production.up.railway.app/api/merchants', merchant);
-      console.log("Merchant Data Submitted:", response.data);
-    } catch (error) {
-      console.error("There was an error submitting the data!", error);
-    }
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  // Format time values to match the database expectation
+  const formattedMerchant = {
+    ...merchant,
+    pickup_start_time: dayjs(merchant.pickup_start_time).format('HH:mm:ss'),
+    pickup_end_time: dayjs(merchant.pickup_end_time).format('HH:mm:ss')
   };
+
+  try {
+    const response = await axios.post('https://mottainai-backend-production.up.railway.app/api/merchants', formattedMerchant);
+    console.log("Merchant Data Submitted:", response.data);
+    alert("Onboarded")
+  } catch (error) {
+    console.error("There was an error submitting the data!", error);
+  }
+};
 
   const renderStepContent = (step) => {
     switch (step) {
@@ -71,6 +79,7 @@ function MerchantForm() {
             <TextField label="Shop Name" name="shop_name" value={merchant.shop_name} onChange={handleChange} fullWidth margin="normal" />
             <TextField label="Shop Logo URL" name="shop_logo_url" value={merchant.shop_logo_url} onChange={handleChange} fullWidth margin="normal" />
             <TextField label="Shop Banner URL" name="shop_banner_url" value={merchant.shop_banner_url} onChange={handleChange} fullWidth margin="normal" />
+            <TextField label="Shop Description" name="description" value={merchant.description} onChange={handleChange} fullWidth margin="normal" />
           </>
         );
       case 2:
