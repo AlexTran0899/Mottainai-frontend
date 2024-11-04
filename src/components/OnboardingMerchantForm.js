@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { TextField, Button, Box, Typography, Stepper, Step, StepLabel, LinearProgress } from '@mui/material';
+import axios from "axios"
+
 
 function MerchantForm() {
   const steps = ['Basic Info', 'Shop Details', 'Contact Info', 'Pickup Times'];
@@ -35,10 +37,16 @@ function MerchantForm() {
     setActiveStep((prev) => prev - 1);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Merchant Data Submitted:", merchant);
-    // Add logic to submit data to backend here
+    
+    try {
+      const response = await axios.post('https://mottainai-backend-production.up.railway.app/api/merchants', merchant);
+      console.log("Merchant Data Submitted:", response.data);
+      // You could display a success message or redirect here
+    } catch (error) {
+      console.error("There was an error submitting the data!", error);
+    }
   };
 
   const renderStepContent = (step) => {
